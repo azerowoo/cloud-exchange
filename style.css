@@ -1,0 +1,282 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f5f5f7;
+  font-family: sans-serif;
+}
+
+#archive-page{
+  position: fixed;
+  inset: 0;
+
+  background:#3a3a3a;
+
+  z-index:10000;
+
+  display:none;
+  flex-direction:column;
+
+  padding:60px 40px;
+
+  overflow-y:auto;
+}
+
+#cloud-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 기본 구름 이미지 스타일 */
+.cloud {
+  position: absolute;
+  cursor: pointer;
+  transition: left 1.2s ease, top 1.2s ease, opacity 1.2s ease;
+}
+
+/* ===================================================
+   모달창 스타일 (z-index를 99999로 최상단 고정)
+   =================================================== */
+
+/* 공통 모달 배경 (어두운 반투명 막) */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6) !important;
+  display: none; /* 기본 숨김 */
+  justify-content: center;
+  align-items: center;
+  z-index: 99999 !important;
+}
+
+/* 모달 본체 흰색 박스 */
+.modal-content {
+  background: #ffffff !important;
+  padding: 40px 50px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+  z-index: 100000 !important;
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.modal-content p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+/* 🌟 [복원] 누락되었던 인풋창 스타일 */
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+}
+
+/* 🌟 [복원] 누락되었던 교환하기 및 확인 버튼 스타일 */
+.modal-content button, #confirmBtn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.modal-content button:hover, #confirmBtn:hover {
+  background-color: #000000;
+}
+
+/* ===================================================
+   하단 네비게이션 및 아카이빙 페이지 스타일
+   =================================================== */
+
+/* 중앙 하단 아카이빙 링크 버튼 */
+#archive-trigger {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  z-index: 4500;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+#archive-trigger:hover {
+  color: #000;
+}
+
+/* 아카이빙 전체 화면 페이지 */
+#archive-page {
+  position: fixed;
+  inset: 0;
+  background:#4a4f56;
+  z-index: 10000;
+  display: none;
+  flex-direction: column;
+  padding: 60px 40px;
+  overflow-y: auto;
+}
+
+.archive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.45);
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.archive-header h2{
+  color:#f2f2f2;
+}
+
+#close-archive{
+  color:#cfcfcf;
+}
+
+#close-archive:hover{
+  color:white;
+
+}
+
+#close-archive {
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #219DFF;
+  transition: color .2s ease;
+}
+
+#close-archive:hover {
+  color: #B8B8B8;
+
+}
+
+/* 아카이브 목록 아이템 */
+.archive-item {
+  display: flex !important;
+  flex-direction: column !important;
+
+  align-items: center;
+  justify-content: flex-start;
+
+  background: transparent;
+  border: none;
+
+  width: 80px;
+  padding: 0;
+}
+
+.archive-item img {
+  width: 80px;
+  height: auto;
+  margin-bottom: 25px;
+}
+
+.archive-item .word-text{
+  font-size:15px;
+  font-weight: bold
+  margin-bottom:8px;
+  color:#219DFF
+}
+.archive-item .cloud-tag{
+  font-size:15px;
+  color:#b7b7b7;
+  margin-bottom:6px;
+}
+/* 구름처럼 둥둥 떠다닐 관객의 단어 스타일 */
+.placed-word {
+  font-size: 15px;
+  font-weight: bold;
+  color: #b0b5bc; /* 🌟 장마철 안개 분위기의 흐린 회색으로 변경 */
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none; 
+  z-index: 10;
+  margin-left: -20px; 
+  margin-top: -10px;
+}
+#archive-list {
+  display: grid;
+
+  grid-template-columns: repeat(6, 1fr);
+
+  gap: 70px 40px;
+
+  width: 100%;
+
+  justify-items: center;
+  align-items: start;
+
+  padding: 40px 20px;
+}
+
+@media (max-width:1500px){
+  #archive-list{
+      grid-template-columns:repeat(5,1fr);
+  }
+}
+
+@media (max-width:1200px){
+  #archive-list{
+      grid-template-columns:repeat(4,1fr);
+  }
+}
+
+@media (max-width:900px){
+  #archive-list{
+      grid-template-columns:repeat(3,1fr);
+  }
+}
+#rain-counter{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+
+  bottom: 60px;
+
+  font-size: 18px;
+  color: #219DFF;
+  letter-spacing: 1px;
+
+  z-index: 4500;
+}
+
+#rain-days{
+  font-weight:bold;
+  color:#000000;
+}

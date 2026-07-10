@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>먹구름 아카이브 전시</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="cloud-container"></div>
+
+  <div id="wordModal" class="modal">
+    <div class="modal-content">
+      <h2>먹구름을 가져가시겠습니까?</h2>
+      <p>교환할 당신의 단어를 남겨주세요.</p>
+      <input id="wordInput" type="text" placeholder="단어를 입력하세요">
+      <button id="exchangeBtn">교환하기</button>
+    </div>
+  </div>
+
+  <div id="saveModal" class="modal">
+    <div class="modal-content">
+      <h2 id="saveModalTitle">먹구름을 소장하셨습니다.</h2>
+      <p>당신의 단어는 먹구름을 대신합니다.</p>
+    
+    
+      <button id="confirmBtn">아카이브 보기</button>
+    </div>
+  </div>
+  <div id="rain-counter">
+    장마 (<span id="rain-days">0.0</span>)일째
+</div>
+  <div id="archive-trigger">구름과 교환된 단어들</div>
+
+  <div id="archive-page">
+    <div class="archive-header">
+      <h2>교환된 먹구름 아카이브</h2>
+      <span id="close-archive">먹구름으로</span>
+    </div>
+    <div id="archive-list"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
