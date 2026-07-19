@@ -11,6 +11,9 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -66,15 +69,15 @@ body {
 /* 공통 모달 배경 (어두운 반투명 막) */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
   background: rgba(0, 0, 0, 0.6) !important;
-  display: none; /* 기본 숨김 */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 99999 !important;
+  overflow: hidden;
 }
 
 /* 모달 본체 흰색 박스 */
@@ -308,7 +311,7 @@ body {
   html,
   body {
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     overflow: hidden;
     position: fixed;
   }
@@ -317,7 +320,7 @@ body {
     position: fixed;
     inset: 0;
     width: 100%;
-    height: 100%;
+    height: 100dvh;
     overflow: hidden;
   }
 
