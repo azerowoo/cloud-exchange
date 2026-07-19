@@ -6,18 +6,16 @@ body {
   overscroll-behavior: none;
   touch-action: none;
 }
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
 }
 
 body {
-  
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   background-color: #f5f5f7;
   font-family: sans-serif;
 }
@@ -69,15 +67,15 @@ body {
 /* 공통 모달 배경 (어두운 반투명 막) */
 .modal {
   position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100dvh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.6) !important;
-  display: none;
+  display: none; /* 기본 숨김 */
   justify-content: center;
   align-items: center;
   z-index: 99999 !important;
-  overflow: hidden;
 }
 
 /* 모달 본체 흰색 박스 */
@@ -232,7 +230,7 @@ body {
   font-size:15px;
   font-weight: bold
   margin-bottom:8px;
-  color:#219DFF;
+  color:#219DFF
 }
 .archive-item .cloud-tag{
   font-size:15px;
@@ -300,99 +298,4 @@ body {
 #rain-days{
   font-weight:bold;
   color:#000000;
-}
-
-/* =================================
-   MOBILE VERSION
-================================= */
-
-@media (max-width: 768px) {
-
-  html,
-  body {
-    width: 100%;
-    height: 100dvh;
-    overflow: hidden;
-    position: fixed;
-  }
-
-  #cloud-container {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  /* 모바일 구름 크기 */
-  .cloud {
-    max-width: none;
-  }
-
-  /* 팝업 전체 화면 */
-  .modal {
-    width: 100%;
-    height: 100%;
-  }
-
-  /* 팝업 박스 */
-  .modal-content {
-    width: 280px;
-    max-width: 280px;
-    padding: 25px 20px;
-  }
-
-  .modal-content h2 {
-    font-size: 18px;
-  }
-
-  .modal-content p {
-    font-size: 13px;
-  }
-
-  .modal-content input {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  .modal-content button,
-  #confirmBtn {
-    font-size: 13px;
-    padding: 10px 22px;
-  }
-
-  /* 하단 링크 */
-  #archive-trigger {
-    font-size: 12px;
-    bottom: 20px;
-  }
-
-  /* 장마일수 */
-  #rain-counter {
-    font-size: 14px;
-    bottom: 45px;
-  }
-
-  /* 아카이브 제목 */
-  .archive-header h2 {
-    font-size: 18px;
-  }
-
-  #close-archive {
-    font-size: 12px;
-  }
-
-  /* 아카이브 구름 */
-  .archive-item img {
-    width: 60px;
-  }
-
-  .archive-item .word-text {
-    font-size: 12px;
-  }
-
-  .archive-item .cloud-tag {
-    font-size: 11px;
-  }
-
 }
