@@ -3,9 +3,23 @@ console.log("script loaded");
 // ==========================
 // 1. CONFIG
 // ==========================
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 const CONFIG = {
-  cloudCount: 400,
-  images: ["Cloud1.png", "Cloud2.png", "Cloud3.png", "Cloud4.png", "Cloud5.png", "Cloud6.png", "Cloud7.png", "Cloud8.png", "Cloud9.png", "Cloud10.png", "Cloud11.png"],
+  cloudCount: isMobile ? 150 : 400,
+  images: [
+    "Cloud1.png",
+    "Cloud2.png",
+    "Cloud3.png",
+    "Cloud4.png",
+    "Cloud5.png",
+    "Cloud6.png",
+    "Cloud7.png",
+    "Cloud8.png",
+    "Cloud9.png",
+    "Cloud10.png",
+    "Cloud11.png"
+  ],
   hoverRadius: 180
 };
 
