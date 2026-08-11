@@ -584,7 +584,17 @@ setTimeout(() => {
   const archivePage = document.getElementById("archive-page");
 
   if (archivePage) {
-    archivePage.style.display = "none";
+
+    // 1초 동안 서서히 사라짐
+    archivePage.style.transition = "opacity 1s ease";
+    archivePage.style.opacity = "0";
+
+    // 페이드아웃이 끝난 뒤 화면에서 제거
+    setTimeout(() => {
+      archivePage.style.display = "none";
+      archivePage.style.opacity = "1";
+    }, 1000);
+
   }
 
 }, 10000);
