@@ -34,19 +34,26 @@ const STATE = {
   POPUP: 4
 };
 
-const WORD_COLORS = [
-  "#c5c8cc",
-  "#b8bcc1",
-  "#a9afb5",
-  "#9ba2a9",
-  "#8b939b"
-];
+
+const CLOUD_COLORS = {
+  "Cloud1.png": "#FFFFFF",
+  "Cloud2.png": "#DEDEDE",
+  "Cloud3.png": "#E6E6E6",
+  "Cloud4.png": "#D6D6D6",
+  "Cloud5.png": "#CFCFCF",
+  "Cloud6.png": "#E7E7E7",
+  "Cloud7.png": "#B3B3B3",
+  "Cloud8.png": "#FBFBFB",
+  "Cloud9.png": "#C3C3C3",
+  "Cloud10.png": "#E9E9E9",
+  "Cloud11.png": "#E3E3E3"
+};
 
 let state = STATE.IDLE;
 let selectedCloud = null;
 let selectedTime = 0;
 
-const archiveData = [];
+let archiveData = [];
 
 let cursor = {
   x: window.innerWidth / 2,
@@ -63,25 +70,60 @@ let thunder = null;
 // ==========================
 // 4. INIT
 // ==========================
-function init() {
+async function init() {
   try {
-    createClouds();
+
+    const collectedClouds = await window.loadCollectedClouds();
+
+    createClouds(collectedClouds);
+
     bindEvents();
     initModalEvents(); 
-    initArchiveEvents(); 
+    initArchiveEvents();
+    loadArchiveFromFirebase(); 
     updateRainCounter();
     animate();
 
     thunder = new Audio("thunder.mp3");
+
   } catch (err) {
     console.error("Init error:", err);
   }
 }
 
+function waitForFirebase() {
+
+  const timer = setInterval(() => {
+
+    if (window.loadCloudData) {
+
+      clearInterval(timer);
+      loadArchiveFromFirebase();
+
+    }
+
+  }, 100);
+
+}
+
+
+async function loadArchiveFromFirebase() {
+
+  const data = await window.loadCloudData();
+
+  archiveData = data;
+
+  console.log("Firebase archive loaded", archiveData);
+  
+  createArchiveWords();
+
+  updateRainCounter();
+
+}
 // ==========================
 // 5. CLOUD CREATION
 // ==========================
-function createClouds() {
+function createClouds(collectedClouds = []) {
   for (let i = 0; i < CONFIG.cloudCount; i++) {
     const img = document.createElement("img");
 
@@ -99,13 +141,52 @@ function createClouds() {
     img.homeY = parseFloat(img.style.top);
 
     const rawNumber = i + 1;
-    img.idNum = rawNumber < 10 ? `0${rawNumber}` : `${rawNumber}`;
+    img.idNum = String(rawNumber).padStart(3, "0");  
+
+    const cloudName = `먹구름${img.idNum}`;
+
+    if (collectedClouds.includes(cloudName)) {
+    continue;
+}
+
+    img.cloudName = cloudName;
 
     img.addEventListener("click", () => onCloudClick(img));
 
     container.appendChild(img);
     clouds.push(img);
+    
   }
+ 
+}
+
+function createArchiveWords() {
+
+  archiveData.forEach(item => {
+
+    const wordDOM = document.createElement("div");
+
+    wordDOM.className = "cloud placed-word";
+
+    wordDOM.innerText = item.word;
+
+    wordDOM.style.color =
+    CLOUD_COLORS[item.cloudImg] || "#a9afb5";
+
+    wordDOM.style.position = "absolute";
+
+    wordDOM.style.left = item.x;
+    wordDOM.style.top = item.y;
+
+    wordDOM.homeX = parseFloat(item.x);
+    wordDOM.homeY = parseFloat(item.y);
+
+    container.appendChild(wordDOM);
+
+    clouds.push(wordDOM);
+
+  });
+
 }
 
 // ==========================
@@ -278,7 +359,7 @@ function flashLightning() {
   flash.style.width = "100vw";
   flash.style.height = "100vh";
 
-  flash.style.background = "#eef6ff";
+  flash.style.background = "#ffffff";
   flash.style.opacity = "0";
 
   flash.style.pointerEvents = "none";
@@ -305,7 +386,7 @@ function flashLightning() {
 setTimeout(() => {
 
   flash.style.transition = "opacity 0.05s";
-  flash.style.opacity = "0.55";
+  flash.style.opacity = "0.8";
 
 }, 180);
 
@@ -320,7 +401,7 @@ setTimeout(() => {
 setTimeout(() => {
 
   flash.style.transition = "opacity 0.04s";
-  flash.style.opacity = "0.28";
+  flash.style.opacity = "0.5";
 
 }, 420);
 
@@ -335,7 +416,7 @@ setTimeout(() => {
 setTimeout(() => {
 
   flash.style.transition = "opacity 0.04s";
-  flash.style.opacity = "0.08";
+  flash.style.opacity = "0.2";
 
 }, 760);
 
@@ -353,7 +434,7 @@ setTimeout(() => {
 
     flash.remove();
 
-  }, 550);
+  }, 1600);
 
 }
 function openModalLater() {
@@ -401,11 +482,25 @@ function processExchange() {
 
   
 
-  // 데이터 백업 및 리스트 적재 (브라우저 기능 호출을 모두 걷어내어 튕김 원천 차단)
-  pendingWordData = { word: userWord, cloudImg: selectedCloud.src, cloudName: cloudName };
-  archiveData.push(pendingWordData);
- 
+// 데이터 백업 및 리스트 적재
+pendingWordData = { 
+  word: userWord,
+  cloudImg: selectedCloud.getAttribute("src").split("/").pop(), 
+  cloudName: cloudName,
+  x: `${selectedCloud.homeX}px`,
+  y: `${selectedCloud.homeY}px`
+};
 
+if (window.saveCollectedCloud) {
+  window.saveCollectedCloud(cloudName);
+}
+
+archiveData.push(pendingWordData);
+
+if (window.saveCloudData) {
+  window.saveCloudData(pendingWordData);
+}
+  
   // 첫 번째 입력창 닫기
   document.getElementById("wordModal").style.display = "none";
   wordInput.value = ""; 
@@ -436,8 +531,11 @@ function returnToMainScreen() {
     
     wordDOM.innerText = pendingWordData.word;
 
+    const cloudFile =
+    selectedCloud.getAttribute("src").split("/").pop();
+
     wordDOM.style.color =
-WORD_COLORS[Math.floor(Math.random() * WORD_COLORS.length)];
+    CLOUD_COLORS[cloudFile] || "#a9afb5";
     
     wordDOM.style.position = "absolute";
     wordDOM.style.left = `${selectedCloud.homeX}px`;
@@ -462,11 +560,11 @@ WORD_COLORS[Math.floor(Math.random() * WORD_COLORS.length)];
     c.style.top = `${c.homeY}px`;
   });
 
- // ⭐ 아카이브를 즉시 연다
+// ⭐ 아카이브를 즉시 연다
 renderArchive();
 document.getElementById("archive-page").style.display = "flex";
 
-// 뒤에서 상태만 정리
+// 뒤에서 상태 정리
 setTimeout(() => {
 
   clouds.forEach(c => {
@@ -478,6 +576,18 @@ setTimeout(() => {
   pendingWordData = null;
 
 }, 1500);
+
+
+// ⭐ 아카이브를 10초 동안 보여준 뒤 자동으로 메인 화면으로 돌아감
+setTimeout(() => {
+
+  const archivePage = document.getElementById("archive-page");
+
+  if (archivePage) {
+    archivePage.style.display = "none";
+  }
+
+}, 10000);
 }
 
 // ==========================
